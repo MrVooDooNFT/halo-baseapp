@@ -145,6 +145,7 @@
           vy: 0,
           isJumping: false,
           attachedTo: null,
+          attachedAngle: 0
         };
 
         const flowerImg = new Image();
@@ -183,8 +184,8 @@ function createRing() {
         function updatePlayer(dt) {
           if (player.attachedTo) {
             const r = player.attachedTo;
-            player.x = r.x + Math.cos(r.angle) * r.radius;
-            player.y = r.y + Math.sin(r.angle) * r.radius;
+            player.x = r.x + Math.cos(player.attachedAngle + r.angle) * r.radius;
+            player.y = r.y + Math.sin(player.attachedAngle + r.angle) * r.radius;
           } else if (player.isJumping) {
             player.vy += gravity * dt;
             player.x += player.vx * dt;
@@ -209,17 +210,24 @@ function createRing() {
         function checkCollision() {
           for (let ring of rings) {
             if (!ring.touched) {
-              const dx = player.x - ring.x;
-              const dy = player.y - ring.y;
-              const dist = Math.sqrt(dx * dx + dy * dy);
-              if (Math.abs(dist - ring.radius) < 15) {
-                ring.touched = true;
-                score++;
-                player.vx = 0;
-                player.vy = 0;
-                player.attachedTo = ring;
-                player.isJumping = false;
-                return;
+  const dx = player.x - ring.x;
+  const dy = player.y - ring.y;
+  const dist = Math.sqrt(dx * dx + dy * dy);
+
+  if (Math.abs(dist - ring.radius) < 15) {
+    ring.touched = true;
+    score++;
+    player.vx = 0;
+    player.vy = 0;
+    player.attachedTo = ring;
+
+    // Burada temas açısını hesapla ve anında pozisyonu düzelt:
+    player.attachedAngle = Math.atan2(player.y - ring.y, player.x - ring.x) - ring.angle;
+    player.x = ring.x + Math.cos(player.attachedAngle + ring.angle) * ring.radius;
+    player.y = ring.y + Math.sin(player.attachedAngle + ring.angle) * ring.radius;
+
+    player.isJumping = false;
+    return;
               }
             }
           }
