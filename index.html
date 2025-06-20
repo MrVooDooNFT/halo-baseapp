@@ -152,12 +152,21 @@
         let flowerLoaded = false;
         flowerImg.onload = () => { flowerLoaded = true; };
 
-        function createRing() {
-          const radius = 60 * (0.8 + Math.random() * 0.5);
-          const dir = Math.random() > 0.5 ? 1 : -1;
-          const x = CENTER_X;
-          return { x, y: -200, radius, angle: 0, direction: dir, touched: false };
-        }
+function createRing() {
+  const radius = 60 * (0.8 + Math.random() * 0.5);
+  const dir = Math.random() > 0.5 ? 1 : -1;
+  const x = rings.length === 0
+    ? CENTER_X
+    : 80 + Math.random() * (canvas.width - 160);
+  return {
+    x,
+    y: -200,
+    radius,
+    angle: 0,
+    direction: dir,
+    touched: false
+  };
+}
 
         rings.push(createRing());
 
@@ -165,7 +174,7 @@
           const fallSpeed = canvas.height / 8;
           for (let ring of rings) {
             ring.y += fallSpeed * dt;
-            ring.angle += 1.2 * dt * ring.direction;
+            ring.angle += 2.5 * dt * ring.direction;
           }
           if (rings[rings.length - 1].y > canvas.height * 0.1) rings.push(createRing());
           if (rings.length > 5) rings.shift();
