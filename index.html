@@ -87,13 +87,29 @@
   let selectedMode = null;
   let ctx, canvas;
   const icqIntroSound = new Audio("https://lqy3lriiybxcejon.public.blob.vercel-storage.com/ddc73a5d-2cd2-4c62-9a20-d4c204865be9/starticq-dClpQPcfory6JNRJR9DxmfqoptQG3y.mp3?sc1g");
-  icqIntroSound.volume = 0.5;
+  icqIntroSound.volume = 0.3;
   const icqEndSound = new Audio("https://lqy3lriiybxcejon.public.blob.vercel-storage.com/ddc73a5d-2cd2-4c62-9a20-d4c204865be9/endicq-Brt2VgwAb8RfgWosNCUbdVqyBKl9Qm.mp3?Wuut");
-  icqEndSound.volume = 0.7;
+  icqEndSound.volume = 0.5;
+  const classicMusic = new Audio("https://lqy3lriiybxcejon.public.blob.vercel-storage.com/ddc73a5d-2cd2-4c62-9a20-d4c204865be9/classic-f2ybHe4EzWux4fQK2UgKW4yDlAo0kI.mp3?RFUp");
+  classicMusic.loop = true;
+  classicMusic.volume = 0.4;
+const icqMusic = new Audio("https://lqy3lriiybxcejon.public.blob.vercel-storage.com/ddc73a5d-2cd2-4c62-9a20-d4c204865be9/icqN-A71Nek8EqErNYoAwsj6jplISoe8OBR.mp3?VgcE");
+icqMusic.volume = 0.2;
+icqMusic.loop = true;
+const jumpClassicSound = new Audio("https://lqy3lriiybxcejon.public.blob.vercel-storage.com/ddc73a5d-2cd2-4c62-9a20-d4c204865be9/jumpclassic-KWh5UGbOOxwRfhP2btysOCW1DIRuUI.mp3?Gb8h");
+jumpClassicSound.volume = 0.4;
+
+const jumpIcqSound = new Audio("https://lqy3lriiybxcejon.public.blob.vercel-storage.com/ddc73a5d-2cd2-4c62-9a20-d4c204865be9/jumpicq-vXewCqHFTqPN2K5ksLvU4VJLHthfL1.mp3?h2ew");
+jumpIcqSound.volume = 0.4;
+const classicEndSound = new Audio("https://lqy3lriiybxcejon.public.blob.vercel-storage.com/ddc73a5d-2cd2-4c62-9a20-d4c204865be9/endclassic-wNWbjmMKf63mLC4rc53E64fk0UItEv.mp3?mpvj");
+classicEndSound.volume = 0.6;
+
+
 
   function selectMode(mode) {
     selectedMode = mode;
     document.getElementById("mode-selection").style.display = "none";
+    if (mode === "classic") classicMusic.play().catch(() => {});
     if (mode === "icq") showIcqIntro();
     else startGame();
   }
@@ -104,6 +120,8 @@
     icqIntroSound.play().catch(() => {});
     setTimeout(() => {
       intro.style.display = "none";
+      icqMusic.play().catch(() => {});
+
       startGame();
     }, 1400);
   }
@@ -219,16 +237,25 @@ canvas.style.background = gradientColor;
         player.y = BOTTOM_Y;
       }
 
-      if (
-        player.y > canvas.height ||
-        player.y < 0 ||
-        player.x < 0 ||
-        player.x > canvas.width
-      ) {
-        if (selectedMode === "icq") icqEndSound.play().catch(() => {});
-        window.FarcadeSDK?.singlePlayer?.actions.gameOver({ score });
-        gameOver = true;
-      }
+if (
+  player.y > canvas.height ||
+  player.y < 0 ||
+  player.x < 0 ||
+  player.x > canvas.width
+) {
+  if (selectedMode === "icq") {
+    icqEndSound.play().catch(() => {});
+    icqMusic.pause();
+  }
+  if (selectedMode === "classic") {
+    classicEndSound.play().catch(() => {});
+    classicMusic.pause();
+  }
+  window.FarcadeSDK?.singlePlayer?.actions.gameOver({ score });
+  gameOver = true;
+}
+
+
     }
 
     function checkCollision() {
@@ -254,25 +281,35 @@ canvas.style.background = gradientColor;
     }
 
     canvas.addEventListener("click", () => {
-      if (gameOver) return location.reload();
-      if (!player.isJumping) {
-        const jumpPower = canvas.height * 2.5;
-        if (!player.attachedTo) {
-          player.vx = 0;
-          player.vy = -jumpPower;
-        } else {
-          const r = player.attachedTo;
-          const dx = player.x - r.x;
-          const dy = player.y - r.y;
-          const dist = Math.sqrt(dx * dx + dy * dy);
-          const scale = jumpPower / dist;
-          player.vx = dx * scale;
-          player.vy = dy * scale;
-        }
-        player.attachedTo = null;
-        player.isJumping = true;
-      }
-    });
+  if (gameOver) return location.reload();
+  if (!player.isJumping) {
+    const jumpPower = canvas.height * 2.5;
+    if (!player.attachedTo) {
+      player.vx = 0;
+      player.vy = -jumpPower;
+    } else {
+      const r = player.attachedTo;
+      const dx = player.x - r.x;
+      const dy = player.y - r.y;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      const scale = jumpPower / dist;
+      player.vx = dx * scale;
+      player.vy = dy * scale;
+    }
+
+    if (selectedMode === "classic") {
+      jumpClassicSound.currentTime = 0;
+      jumpClassicSound.play().catch(() => {});
+    } else if (selectedMode === "icq") {
+      jumpIcqSound.currentTime = 0;
+      jumpIcqSound.play().catch(() => {});
+    }
+
+    player.attachedTo = null;
+    player.isJumping = true;
+  }
+});
+
 
     let last = performance.now();
     function loop(now) {
