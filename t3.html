@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Farcade</title>
+    <script src="https://cdn.jsdelivr.net/npm/@farcade/game-sdk@latest/dist/index.min.js"></script>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      canvas {
+        display: block;
+        background: #fdfcdc;
+        outline: 4px solid #7c65c1;
+        margin: auto;
+      }
+      #mode-selection {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: #fdfcdc;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 40px;
+        z-index: 20;
+      }
+      #select-image {
+        width: 150px;
+        user-select: none;
+        pointer-events: none;
+      }
+      #logos {
+        width: 280px;
+        display: flex;
+        justify-content: space-between;
+      }
+      #logos img {
+        cursor: pointer;
+        width: 120px;
+      }
+      #icq-intro {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: #fdfcdc;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 30;
+        opacity: 1;
+        transition: opacity 0.8s ease;
+        pointer-events: none;
+      }
+      #icq-intro img {
+        max-width: 300px;
+        user-select: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="mode-selection">
+      <img src="https://lqy3lriiybxcejon.public.blob.vercel-storage.com/ddc73a5d-2cd2-4c62-9a20-d4c204865be9/select-DnPRS71OCv6xZJXP9Wufsok6InOuQa.png?4GLs" alt="Select Icon" id="select-image" draggable="false" />
+      <div id="logos">
+        <img src="https://lqy3lriiybxcejon.public.blob.vercel-storage.com/ddc73a5d-2cd2-4c62-9a20-d4c204865be9/logoClassic-GF9FIUy2V0Tk8PqM1zUhHcEtbokutU.png?dm0s" alt="Classic Mode" onclick="selectMode('classic')" />
+        <img src="https://lqy3lriiybxcejon.public.blob.vercel-storage.com/ddc73a5d-2cd2-4c62-9a20-d4c204865be9/logoicq-0ldWFIT3nkawKzD3zqsSh0ijhDnzSr.png?ogib" alt="ICQ Mode" onclick="selectMode('icq')" />
+      </div>
+    </div>
+
+    <div id="icq-intro" style="display: none">
+      <img src="https://lqy3lriiybxcejon.public.blob.vercel-storage.com/ddc73a5d-2cd2-4c62-9a20-d4c204865be9/old-q6tGMzlfo0q0gVl4e1Ce3uoXe60tO8.png?bTrM" alt="ICQ Intro" />
+    </div>
+
+    <canvas id="game"></canvas>
+
+    <script src="https://cdn.jsdelivr.net/npm/@farcade/game-sdk@latest/dist/index.min.js"></script>
+    <script>
+      let selectedMode = null;
+      let ctx, canvas;
+      const icqIntroSound = new Audio("https://lqy3lriiybxcejon.public.blob.vercel-storage.com/ddc73a5d-2cd2-4c62-9a20-d4c204865be9/starticq-dClpQPcfory6JNRJR9DxmfqoptQG3y.mp3?sc1g");
+      icqIntroSound.volume = 0.5;
+      const icqEndSound = new Audio("https://lqy3lriiybxcejon.public.blob.vercel-storage.com/ddc73a5d-2cd2-4c62-9a20-d4c204865be9/endicq-Brt2VgwAb8RfgWosNCUbdVqyBKl9Qm.mp3?Wuut");
+      icqEndSound.volume = 0.7;
+
+      function selectMode(mode) {
+        selectedMode = mode;
+        document.getElementById("mode-selection").style.display = "none";
+        if (mode === "icq") showIcqIntro();
+        else startGame();
+      }
+
+      function showIcqIntro() {
+        const intro = document.getElementById("icq-intro");
+        intro.style.display = "flex";
+        intro.style.opacity = "1";
+        icqIntroSound.play().catch(() => {});
+        setTimeout(() => {
+          intro.style.opacity = "0";
+          if (ctx && canvas) ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }, 600);
+        setTimeout(() => {
+          intro.style.display = "none";
+          startGame();
+        }, 1400);
+      }
+
+      function startGame() {
+        initGame();
+      }
+
+      function initGame() {
+        canvas = document.getElementById("game");
+        ctx = canvas.getContext("2d");
+        const targetRatio = 9 / 16;
+        if (window.innerWidth / window.innerHeight > targetRatio) {
+          canvas.height = window.innerHeight;
+          canvas.width = canvas.height * targetRatio;
+        } else {
+          canvas.width = window.innerWidth;
+          canvas.height = canvas.width / targetRatio;
+        }
+
+        const CENTER_X = canvas.width / 2;
+        const BOTTOM_Y = canvas.height - 100;
+
+        let rings = [];
+        let gravity = canvas.height * 3;
+        let gameOver = false;
+        let score = 0;
+
+        const player = {
+          x: CENTER_X,
+          y: BOTTOM_Y,
+          radius: 10,
+          color: "#7c65c1",
+          vx: 0,
+          vy: 0,
+          isJumping: false,
+          attachedTo: null,
+        };
+
+        const flowerImg = new Image();
+        flowerImg.src = selectedMode === "icq" ? "https://lqy3lriiybxcejon.public.blob.vercel-storage.com/ddc73a5d-2cd2-4c62-9a20-d4c204865be9/Haloicq-bxV7JqmMGPRHmTZyykljtUDctQdJYL.png?KWoJ" : null;
+        let flowerLoaded = false;
+        flowerImg.onload = () => { flowerLoaded = true; };
+
+        function createRing() {
+          const radius = 60 * (0.8 + Math.random() * 0.5);
+          const dir = Math.random() > 0.5 ? 1 : -1;
+          const x = CENTER_X;
+          return { x, y: -200, radius, angle: 0, direction: dir, touched: false };
+        }
+
+        rings.push(createRing());
+
+        function updateRings(dt) {
+          const fallSpeed = canvas.height / 8;
+          for (let ring of rings) {
+            ring.y += fallSpeed * dt;
+            ring.angle += 1.2 * dt * ring.direction;
+          }
+          if (rings[rings.length - 1].y > canvas.height * 0.1) rings.push(createRing());
+          if (rings.length > 5) rings.shift();
+        }
+
+        function updatePlayer(dt) {
+          if (player.attachedTo) {
+            const r = player.attachedTo;
+            player.x = r.x + Math.cos(r.angle) * r.radius;
+            player.y = r.y + Math.sin(r.angle) * r.radius;
+          } else if (player.isJumping) {
+            player.vy += gravity * dt;
+            player.x += player.vx * dt;
+            player.y += player.vy * dt;
+          } else {
+            player.x = CENTER_X;
+            player.y = BOTTOM_Y;
+          }
+
+          if (
+            player.y > canvas.height ||
+            player.y < 0 ||
+            player.x < 0 ||
+            player.x > canvas.width
+          ) {
+            if (selectedMode === "icq") icqEndSound.play().catch(() => {});
+            window.FarcadeSDK?.singlePlayer?.actions.gameOver({ score });
+            gameOver = true;
+          }
+        }
+
+        function checkCollision() {
+          for (let ring of rings) {
+            if (!ring.touched) {
+              const dx = player.x - ring.x;
+              const dy = player.y - ring.y;
+              const dist = Math.sqrt(dx * dx + dy * dy);
+              if (Math.abs(dist - ring.radius) < 15) {
+                ring.touched = true;
+                score++;
+                player.vx = 0;
+                player.vy = 0;
+                player.attachedTo = ring;
+                player.isJumping = false;
+                return;
+              }
+            }
+          }
+        }
+
+        canvas.addEventListener("click", () => {
+          if (gameOver) return location.reload();
+          if (!player.isJumping) {
+            const jumpPower = canvas.height * 2.5;
+            if (!player.attachedTo) {
+              player.vx = 0;
+              player.vy = -jumpPower;
+            } else {
+              const r = player.attachedTo;
+              const dx = player.x - r.x;
+              const dy = player.y - r.y;
+              const dist = Math.sqrt(dx * dx + dy * dy);
+              const scale = jumpPower / dist;
+              player.vx = dx * scale;
+              player.vy = dy * scale;
+            }
+            player.attachedTo = null;
+            player.isJumping = true;
+          }
+        });
+
+        let last = performance.now();
+        function loop(now) {
+          const dt = (now - last) / 1000;
+          last = now;
+          if (gameOver) return;
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          ctx.fillStyle = "#7c65c1";
+          ctx.font = "20px sans-serif";
+          ctx.fillText(`Score: ${score}`, 10, 10);
+          updateRings(dt);
+          updatePlayer(dt);
+          checkCollision();
+          for (let r of rings) drawRing(r);
+          drawPlayer();
+          requestAnimationFrame(loop);
+        }
+
+        function drawRing(ring) {
+          if (selectedMode === "icq") {
+            if (!flowerLoaded) return;
+            const size = ring.radius * 2;
+            ctx.save();
+            ctx.translate(ring.x, ring.y);
+            ctx.rotate(ring.angle);
+            ctx.drawImage(flowerImg, -size/2, -size/2, size, size);
+            ctx.restore();
+          } else {
+            ctx.beginPath();
+            ctx.arc(ring.x, ring.y, ring.radius, 0, Math.PI * 2);
+            ctx.strokeStyle = "#a0c4ff";
+            ctx.lineWidth = 4;
+            ctx.stroke();
+          }
+        }
+
+        function drawPlayer() {
+          ctx.beginPath();
+          ctx.arc(player.x, player.y, player.radius, 0, Math.PI * 2);
+          ctx.fillStyle = player.color;
+          ctx.fill();
+        }
+
+        window.FarcadeSDK?.on("play_again", () => location.reload());
+        window.FarcadeSDK?.on("toggle_mute", d => console.log("Mute:", d.isMuted));
+        window.FarcadeSDK?.singlePlayer?.actions.ready();
+        requestAnimationFrame(loop);
+      }
+    </script>
+  </body>
+</html>
