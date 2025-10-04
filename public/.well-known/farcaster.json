@@ -1,6 +1,6 @@
 {
   "name": "Halo",
-  "description": " Arcade-Reflex Game built by MrVooDoo",
+  "description": "Arcade-Reflex Game built by MrVooDoo",
   "icon": "https://halo-nine-indol.vercel.app/icon.png",
   "home_url": "https://halo-nine-indol.vercel.app/",
   "frames": [
@@ -8,8 +8,17 @@
       "version": "vNext",
       "image": "https://halo-nine-indol.vercel.app/preview.png",
       "buttons": [
-        { "label": "Play Halo", "action": "link", "target": "https://halo-nine-indol.vercel.app/" }
+        {
+          "label": "Play Halo",
+          "action": "link",
+          "target": "https://halo-nine-indol.vercel.app/"
+        }
       ]
     }
-  ]
+  ],
+  "accountAssociation": {
+    "header": "eyJmaWQiOjM4MzYxMiwidHlwZSI6ImF1dGgiLCJrZXkiOiIweEY1NWMwOWJiMzc4MzlmOGFiZWIzM0Q1QTI1NmZhNjU0OUM4MjlmQ0IifQ",
+    "payload": "eyJkb21haW4iOiJoYWxvLW5pbmUtaW5kb2wudmVyY2VsLmFwcCJ9",
+    "signature": "IbWgA7x9b87asuPtV+n1tGllcyz7+Rhmv5ntBSmAFmB/+ia+R1c5lN17AKq5TgxAuPVha9dw6jJApCWkAtNvsBw="
+  }
 }
