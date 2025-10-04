@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Farcade</title>
+    <title>Farcade: Halo</title>
 
     <!-- Farcaster Mini App embed -->
     <meta name="fc:miniapp" content='{
@@ -22,6 +22,12 @@
         "action": { "type": "launch_miniapp", "url": "https://halo-nine-indol.vercel.app/" }
       }
     }' />
+
+    <!-- OG / Twitter preview -->
+    <meta property="og:title" content="Farcade: Halo — Jump & Ring!" />
+    <meta property="og:description" content="Tek dokunuşla halka atla, skoru artır. Farcaster Mini App içinde oynanır." />
+    <meta property="og:image" content="https://halo-nine-indol.vercel.app/og/halo-3x2.png" />
+    <meta name="twitter:card" content="summary_large_image" />
 
     <style>
       * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -45,17 +51,34 @@
   </head>
 
   <body>
-    <!-- Farcaster Mini App: splash'ı kapat -->
+    <!-- Farcaster Mini App SDK loader -->
     <script type="module">
-      import mini from 'https://cdn.jsdelivr.net/npm/@farcaster/miniapp-sdk/+esm';
-      const { sdk } = mini;
+      async function loadSdk() {
+        try {
+          const m = await import('https://cdn.jsdelivr.net/npm/@farcaster/miniapp-sdk/+esm');
+          if (m?.sdk?.actions?.ready) return m.sdk;
+        } catch (e) { console.warn('jsDelivr failed', e); }
+
+        try {
+          const m = await import('https://unpkg.com/@farcaster/miniapp-sdk@latest/dist/esm/index.js');
+          if (m?.sdk?.actions?.ready) return m.sdk;
+        } catch (e) { console.warn('unpkg failed', e); }
+
+        try {
+          const m = await import('https://esm.run/@farcaster/miniapp-sdk');
+          if (m?.sdk?.actions?.ready) return m.sdk;
+        } catch (e) { console.warn('esm.run failed', e); }
+
+        throw new Error('Mini App SDK could not be loaded');
+      }
 
       (async () => {
         try {
+          const sdk = await loadSdk();
           await sdk.actions.ready();
-          console.log("✅ MiniApp ready() called");
+          console.log("✅ Farcaster MiniApp ready() called successfully");
         } catch (e) {
-          console.error("❌ miniapp ready() error:", e);
+          console.error("❌ MiniApp initialization failed:", e);
         }
       })();
 
