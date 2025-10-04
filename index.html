@@ -14,7 +14,6 @@
         "action": { "type": "launch_miniapp", "url": "https://halo-nine-indol.vercel.app/" }
       }
     }' />
-    <!-- Eski istemciler için uyumluluk -->
     <meta name="fc:frame" content='{
       "version": "1",
       "imageUrl": "https://halo-nine-indol.vercel.app/og/halo-3x2.png",
@@ -25,85 +24,44 @@
     }' />
 
     <style>
-      * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-      }
-      canvas {
-        display: block;
-        outline: 4px solid #7c65c1;
-        margin: auto;
-      }
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      canvas { display: block; outline: 4px solid #7c65c1; margin: auto; }
       #mode-selection {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: #fdfcdc;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        gap: 10px;
-        z-index: 20;
+        position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+        background: #fdfcdc; display: flex; flex-direction: column;
+        align-items: center; justify-content: center; gap: 10px; z-index: 20;
       }
-      #select-image {
-        width: 300px;
-        user-select: none;
-        pointer-events: none;
-      }
-      #logos {
-        width: 280px;
-        display: flex;
-        justify-content: space-between;
-      }
-      #logos img {
-        cursor: pointer;
-        width: 120px;
-      }
+      #select-image { width: 300px; user-select: none; pointer-events: none; }
+      #logos { width: 280px; display: flex; justify-content: space-between; }
+      #logos img { cursor: pointer; width: 120px; }
       #icq-intro {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: #fdfcdc;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        z-index: 30;
-        opacity: 1;
-        transition: opacity 0.8s ease;
-        pointer-events: none;
+        position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+        background: #fdfcdc; display: flex; align-items: center;
+        justify-content: center; z-index: 30; opacity: 1;
+        transition: opacity 0.8s ease; pointer-events: none;
       }
-      #icq-intro img {
-        max-width: 300px;
-        user-select: none;
-      }
+      #icq-intro img { max-width: 300px; user-select: none; }
     </style>
   </head>
 
   <body>
-    <!-- Farcaster Mini App: splash'ı hemen kapat -->
-<script type="module">
-  import mini from 'https://cdn.jsdelivr.net/npm/@farcaster/miniapp-sdk/+esm';
-  const { sdk } = mini;
+    <!-- Farcaster Mini App: splash'ı kapat -->
+    <script type="module">
+      import mini from 'https://cdn.jsdelivr.net/npm/@farcaster/miniapp-sdk/+esm';
+      const { sdk } = mini;
 
-  (async () => {
-    try {
-      await sdk.actions.ready(); // splash kapanır
-      console.log("✅ MiniApp ready() called");
-    } catch (e) {
-      console.error("❌ miniapp ready() error:", e);
-    }
-  })();
+      (async () => {
+        try {
+          await sdk.actions.ready();
+          console.log("✅ MiniApp ready() called");
+        } catch (e) {
+          console.error("❌ miniapp ready() error:", e);
+        }
+      })();
 
-  // (İsteğe bağlı) Sahip bilgileri
-  window.FARCADE_HANDLE = "@mrvoodoo";
-  window.FARCADE_TREASURY = "0xF55c09bb37839f8abeb33D5A256fa6549C829fCB";
-    </>
+      window.FARCADE_HANDLE = "@mrvoodoo";
+      window.FARCADE_TREASURY = "0xF55c09bb37839f8abeb33D5A256fa6549C829fCB";
+    </script>
 
     <div id="mode-selection">
       <img src="https://lqy3lriiybxcejon.public.blob.vercel-storage.com/ddc73a5d-2cd2-4c62-9a20-d4c204865be9/selectn-hGvj8li0gEymrjmLW9ikUWcJ8XSsaK.png?dVaH" alt="Select Icon" id="select-image" draggable="false" />
@@ -119,7 +77,7 @@
 
     <canvas id="game"></canvas>
 
-    <>
+    <script>
       let selectedMode = null;
       let ctx, canvas;
 
@@ -139,9 +97,7 @@
         }, 1400);
       }
 
-      function startGame() {
-        initGame();
-      }
+      function startGame() { initGame(); }
 
       function initGame() {
         canvas = document.getElementById("game");
@@ -169,60 +125,34 @@
         let gravity = canvas.height * 3;
         let gameOver = false;
         let score = 0;
-
         let fallSpeedMultiplier = 1;
         let rotationSpeedMultiplier = 1;
 
         function updateSpeedMultipliers() {
-          if (score >= 100) {
-            rotationSpeedMultiplier = 1.2;
-            fallSpeedMultiplier = 1.12;
-          } else if (score >= 60) {
-            rotationSpeedMultiplier = 1.15;
-            fallSpeedMultiplier = 1.09;
-          } else if (score >= 30) {
-            rotationSpeedMultiplier = 1.10;
-            fallSpeedMultiplier = 1.06;
-          } else if (score >= 10) {
-            rotationSpeedMultiplier = 1.05;
-            fallSpeedMultiplier = 1.03;
-          } else {
-            rotationSpeedMultiplier = 1;
-            fallSpeedMultiplier = 1;
-          }
+          if (score >= 100) { rotationSpeedMultiplier = 1.2; fallSpeedMultiplier = 1.12; }
+          else if (score >= 60) { rotationSpeedMultiplier = 1.15; fallSpeedMultiplier = 1.09; }
+          else if (score >= 30) { rotationSpeedMultiplier = 1.10; fallSpeedMultiplier = 1.06; }
+          else if (score >= 10) { rotationSpeedMultiplier = 1.05; fallSpeedMultiplier = 1.03; }
+          else { rotationSpeedMultiplier = 1; fallSpeedMultiplier = 1; }
         }
 
         const player = {
-          x: CENTER_X,
-          y: BOTTOM_Y,
-          radius: 10,
-          color: "#7c65c1",
-          vx: 0,
-          vy: 0,
-          isJumping: false,
-          attachedTo: null,
-          attachedAngle: 0
+          x: CENTER_X, y: BOTTOM_Y, radius: 10, color: "#7c65c1",
+          vx: 0, vy: 0, isJumping: false, attachedTo: null, attachedAngle: 0
         };
 
         const flowerImg = new Image();
-        flowerImg.src = selectedMode === "icq" ? "https://lqy3lriiybxcejon.public.blob.vercel-storage.com/ddc73a5d-2cd2-4c62-9a20-d4c204865be9/Haloicq-bxV7JqmMGPRHmTZyykljtUDctQdJYL.png?KWoJ" : null;
+        flowerImg.src = selectedMode === "icq"
+          ? "https://lqy3lriiybxcejon.public.blob.vercel-storage.com/ddc73a5d-2cd2-4c62-9a20-d4c204865be9/Haloicq-bxV7JqmMGPRHmTZyykljtUDctQdJYL.png?KWoJ"
+          : null;
         let flowerLoaded = false;
         flowerImg.onload = () => { flowerLoaded = true; };
 
         function createRing() {
           const radius = 60 * (0.8 + Math.random() * 0.5);
           const dir = Math.random() > 0.5 ? 1 : -1;
-          const x = rings.length === 0
-            ? CENTER_X
-            : 80 + Math.random() * (canvas.width - 160);
-          return {
-            x,
-            y: -200,
-            radius,
-            angle: 0,
-            direction: dir,
-            touched: false
-          };
+          const x = rings.length === 0 ? CENTER_X : 80 + Math.random() * (canvas.width - 160);
+          return { x, y: -200, radius, angle: 0, direction: dir, touched: false };
         }
 
         rings.push(createRing());
@@ -252,12 +182,7 @@
             player.y = BOTTOM_Y;
           }
 
-          if (
-            player.y > canvas.height ||
-            player.y < 0 ||
-            player.x < 0 ||
-            player.x > canvas.width
-          ) {
+          if (player.y > canvas.height || player.y < 0 || player.x < 0 || player.x > canvas.width) {
             gameOver = true;
           }
         }
@@ -288,37 +213,27 @@
           if (gameOver) return location.reload();
           if (!player.isJumping) {
             const jumpPower = canvas.height * 2.5;
-            if (!player.attachedTo) {
-              player.vx = 0;
-              player.vy = -jumpPower;
-            } else {
+            if (!player.attachedTo) { player.vx = 0; player.vy = -jumpPower; }
+            else {
               const r = player.attachedTo;
-              const dx = player.x - r.x;
-              const dy = player.y - r.y;
+              const dx = player.x - r.x; const dy = player.y - r.y;
               const dist = Math.sqrt(dx * dx + dy * dy);
               const scale = jumpPower / dist;
-              player.vx = dx * scale;
-              player.vy = dy * scale;
+              player.vx = dx * scale; player.vy = dy * scale;
             }
-            player.attachedTo = null;
-            player.isJumping = true;
+            player.attachedTo = null; player.isJumping = true;
           }
         });
 
         let last = performance.now();
         function loop(now) {
-          const dt = (now - last) / 1000;
-          last = now;
+          const dt = (now - last) / 1000; last = now;
           if (gameOver) return;
           ctx.clearRect(0, 0, canvas.width, canvas.height);
-          ctx.fillStyle = "#7c65c1";
-          ctx.font = "20px sans-serif";
+          ctx.fillStyle = "#7c65c1"; ctx.font = "20px sans-serif";
           ctx.fillText(`Score: ${score}`, 10, 20);
-          updateRings(dt);
-          updatePlayer(dt);
-          checkCollision();
-          for (let r of rings) drawRing(r);
-          drawPlayer();
+          updateRings(dt); updatePlayer(dt); checkCollision();
+          for (let r of rings) drawRing(r); drawPlayer();
           requestAnimationFrame(loop);
         }
 
@@ -326,30 +241,22 @@
           if (selectedMode === "icq") {
             if (!flowerLoaded) return;
             const size = ring.radius * 2;
-            ctx.save();
-            ctx.translate(ring.x, ring.y);
-            ctx.rotate(ring.angle);
+            ctx.save(); ctx.translate(ring.x, ring.y); ctx.rotate(ring.angle);
             ctx.drawImage(flowerImg, -size / 2, -size / 2, size, size);
             ctx.restore();
           } else {
-            ctx.beginPath();
-            ctx.arc(ring.x, ring.y, ring.radius, 0, Math.PI * 2);
-            ctx.strokeStyle = "#a0c4ff";
-            ctx.lineWidth = 4;
-            ctx.stroke();
+            ctx.beginPath(); ctx.arc(ring.x, ring.y, ring.radius, 0, Math.PI * 2);
+            ctx.strokeStyle = "#a0c4ff"; ctx.lineWidth = 4; ctx.stroke();
           }
         }
 
         function drawPlayer() {
-          ctx.beginPath();
-          ctx.arc(player.x, player.y, player.radius, 0, Math.PI * 2);
-          ctx.fillStyle = player.color;
-          ctx.fill();
+          ctx.beginPath(); ctx.arc(player.x, player.y, player.radius, 0, Math.PI * 2);
+          ctx.fillStyle = player.color; ctx.fill();
         }
 
         requestAnimationFrame(loop);
       }
-    </>
+    </script>
   </body>
 </html>
-
