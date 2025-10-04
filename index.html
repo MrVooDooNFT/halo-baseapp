@@ -1,6 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    <meta name="fc:miniapp" content='{
+  "version": "1",
+  "imageUrl": "https://halo-nine-indol.vercel.app/og/halo-3x2.png",
+  "button": {
+    "title": "Play Halo",
+    "action": { "type": "launch_miniapp", "url": "https://halo-nine-indol.vercel.app/" }
+  }
+}' />
+<meta name="fc:frame" content='{
+  "version": "1",
+  "imageUrl": "https://halo-nine-indol.vercel.app/og/halo-3x2.png",
+  "button": {
+    "title": "Play Halo",
+    "action": { "type": "launch_miniapp", "url": "https://halo-nine-indol.vercel.app/" }
+  }
+}' />
+
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Farcade</title>
@@ -65,6 +82,19 @@
     </style>
   </head>
   <body>
+    <script type="module">
+  import { sdk } from 'https://esm.sh/@farcaster/miniapp-sdk';
+
+  // Oyun hazır olduğunda splash'ı kapat
+  window.addEventListener('load', async () => {
+    await sdk.actions.ready();
+  });
+
+  // (İsteğe bağlı) Skor ekranında kullanıcıya selam verip cüzdanını göstermek için sabitler:
+  window.FARCADE_HANDLE = '@mrvoodoo';
+  window.FARCADE_TREASURY = '0xF55c09bb37839f8abeb33D5A256fa6549C829fCB';
+</script>
+
     <div id="mode-selection">
       <img src="https://lqy3lriiybxcejon.public.blob.vercel-storage.com/ddc73a5d-2cd2-4c62-9a20-d4c204865be9/selectn-hGvj8li0gEymrjmLW9ikUWcJ8XSsaK.png?dVaH" alt="Select Icon" id="select-image" draggable="false" />
       <div id="logos">
@@ -312,3 +342,4 @@
     </script>
   </body>
 </html>
+
