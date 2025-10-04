@@ -87,17 +87,23 @@
 
   <body>
     <!-- Farcaster Mini App: splash'ı hemen kapat -->
-    <script type="module">
-      import { sdk } from 'https://esm.sh/@farcaster/miniapp-sdk';
-      try {
-        await sdk.actions.ready();
-      } catch (e) {
-        console.error('miniapp ready() error:', e);
-      }
-      // Oyun sahibine ait kimlik bilgileri
-      window.FARCADE_HANDLE = '@mrvoodoo';
-      window.FARCADE_TREASURY = '0xF55c09bb37839f8abeb33D5A256fa6549C829fCB';
-    </script>
+<script type="module">
+  import mini from 'https://cdn.jsdelivr.net/npm/@farcaster/miniapp-sdk/+esm';
+  const { sdk } = mini;
+
+  (async () => {
+    try {
+      await sdk.actions.ready(); // splash kapanır
+      console.log("✅ MiniApp ready() called");
+    } catch (e) {
+      console.error("❌ miniapp ready() error:", e);
+    }
+  })();
+
+  // (İsteğe bağlı) Sahip bilgileri
+  window.FARCADE_HANDLE = "@mrvoodoo";
+  window.FARCADE_TREASURY = "0xF55c09bb37839f8abeb33D5A256fa6549C829fCB";
+    </>
 
     <div id="mode-selection">
       <img src="https://lqy3lriiybxcejon.public.blob.vercel-storage.com/ddc73a5d-2cd2-4c62-9a20-d4c204865be9/selectn-hGvj8li0gEymrjmLW9ikUWcJ8XSsaK.png?dVaH" alt="Select Icon" id="select-image" draggable="false" />
@@ -113,7 +119,7 @@
 
     <canvas id="game"></canvas>
 
-    <script>
+    <>
       let selectedMode = null;
       let ctx, canvas;
 
@@ -343,6 +349,7 @@
 
         requestAnimationFrame(loop);
       }
-    </script>
+    </>
   </body>
 </html>
+
