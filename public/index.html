@@ -39,23 +39,48 @@
         z-index:30;opacity:1;transition:opacity .8s ease;pointer-events:none
       }
       #icq-intro img{max-width:300px;user-select:none}
+
+      /* 🔹 Mini App butonu stili */
+      #addMiniAppBtn{
+        position:absolute;bottom:20px;left:50%;transform:translateX(-50%);
+        background:#7c65c1;color:#fff;border:none;border-radius:12px;
+        padding:10px 20px;font-size:16px;cursor:pointer;z-index:50;
+        box-shadow:0 2px 6px rgba(0,0,0,0.2);
+      }
+      #addMiniAppBtn:active{transform:translateX(-50%) scale(0.97);}
     </style>
   </head>
 
   <body>
-    <!-- Farcaster Mini App SDK (resmî öneri: esm.sh) + ready(true) -->
+    <!-- 🔹 Mini App Ekle Butonu -->
+    <button id="addMiniAppBtn">Mini App’i Ekle</button>
+
+    <!-- Farcaster Mini App SDK -->
     <script type="module">
       import { sdk } from 'https://esm.sh/@farcaster/miniapp-sdk';
 
       (async () => {
         try {
-          // true: geri/kenar jestlerini kapatır; splash'ı hemen kapatır
+          // true: splash ekranını kapat
           await sdk.actions.ready(true);
           console.log('✅ MiniApp ready(true) called via esm.sh');
         } catch (e) {
           console.error('❌ MiniApp init failed:', e);
         }
       })();
+
+      // Mini App ekleme işlemi
+      const btn = document.getElementById('addMiniAppBtn');
+      btn.addEventListener('click', async () => {
+        try {
+          await sdk.actions.addMiniApp();
+          btn.textContent = '✅ Eklendi!';
+          setTimeout(() => (btn.style.display = 'none'), 2000);
+        } catch (e) {
+          console.warn('MiniApp eklenemedi:', e);
+          btn.textContent = '⚠️ Eklenemedi';
+        }
+      });
 
       // (opsiyonel) sahip bilgileri
       window.FARCADE_HANDLE = '@mrvoodoo';
