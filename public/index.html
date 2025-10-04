@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Farcade: Halo</title>
 
-    <!-- Farcaster Mini App embed -->
+    <!-- Farcaster Mini App embed (feed kartı + Launch) -->
     <meta name="fc:miniapp" content='{
       "version":"1",
       "imageUrl":"https://halo-nine-indol.vercel.app/og/halo-3x2.png",
@@ -42,34 +42,27 @@
   </head>
 
   <body>
-    <!-- Mini App SDK robust loader (renderi bloklamaz) -->
+    <!-- Farcaster Mini App SDK: çoklu CDN fallback + ready(true) -->
     <script type="module">
       async function loadSdk() {
-        try {
-          const m = await import('https://cdn.jsdelivr.net/npm/@farcaster/miniapp-sdk/+esm');
-          if (m?.sdk?.actions?.ready) return m.sdk;
-        } catch(e){ console.warn('jsDelivr failed', e); }
-        try {
-          const m = await import('https://unpkg.com/@farcaster/miniapp-sdk@latest/dist/esm/index.js');
-          if (m?.sdk?.actions?.ready) return m.sdk;
-        } catch(e){ console.warn('unpkg failed', e); }
-        try {
-          const m = await import('https://esm.run/@farcaster/miniapp-sdk');
-          if (m?.sdk?.actions?.ready) return m.sdk;
-        } catch(e){ console.warn('esm.run failed', e); }
+        try { const m = await import('https://cdn.jsdelivr.net/npm/@farcaster/miniapp-sdk/+esm'); if (m?.sdk?.actions?.ready) return m.sdk; } catch(e) { console.warn('jsDelivr failed', e); }
+        try { const m = await import('https://unpkg.com/@farcaster/miniapp-sdk@latest/dist/esm/index.js'); if (m?.sdk?.actions?.ready) return m.sdk; } catch(e) { console.warn('unpkg failed', e); }
+        try { const m = await import('https://esm.run/@farcaster/miniapp-sdk'); if (m?.sdk?.actions?.ready) return m.sdk; } catch(e) { console.warn('esm.run failed', e); }
         throw new Error('Mini App SDK not loaded');
       }
+
       (async () => {
-        try{
+        try {
           const sdk = await loadSdk();
-          await sdk.actions.ready(); // istersen jestleri kapatmak için ready(true)
-          console.log('✅ MiniApp ready() called');
-        }catch(e){
+          // true = native geri/kenar jestlerini kapatır; splash kapanır
+          await sdk.actions.ready(true);
+          console.log('✅ MiniApp ready(true) called');
+        } catch (e) {
           console.error('❌ MiniApp init failed:', e);
         }
       })();
 
-      // Sahip bilgileri (opsiyonel)
+      // (opsiyonel) sahip bilgileri
       window.FARCADE_HANDLE = '@mrvoodoo';
       window.FARCADE_TREASURY = '0xF55c09bb37839f8abeb33D5A256fa6549C829fCB';
     </script>
