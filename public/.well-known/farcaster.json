@@ -1,7 +1,15 @@
 {
-  "name": "Halo (Farcade)",
-  "home": "https://halo-nine-indol.vercel.app/",
+  "name": "Halo",
+  "description": " Arcade-Reflex Game built by MrVooDoo",
   "icon": "https://halo-nine-indol.vercel.app/icon.png",
-  "splashImageUrl": "https://halo-nine-indol.vercel.app/splash.png",
-  "splashBackgroundColor": "#0b0f19"
+  "home_url": "https://halo-nine-indol.vercel.app/",
+  "frames": [
+    {
+      "version": "vNext",
+      "image": "https://halo-nine-indol.vercel.app/preview.png",
+      "buttons": [
+        { "label": "Play Halo", "action": "link", "target": "https://halo-nine-indol.vercel.app/" }
+      ]
+    }
+  ]
 }
