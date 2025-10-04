@@ -1,234 +1,30 @@
 <!DOCTYPE html>
 <html lang="tr">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Farcade: Halo</title>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Halo — Teşhis</title>
 
-    <!-- Farcaster Mini App embed -->
-    <meta name="fc:miniapp" content='{
-      "version":"1",
-      "imageUrl":"https://halo-nine-indol.vercel.app/og/halo-3x2.png",
-      "button":{"title":"Play Halo","action":{"type":"launch_miniapp","url":"https://halo-nine-indol.vercel.app/"}}
-    }'/>
-    <meta name="fc:frame" content='{
-      "version":"1",
-      "imageUrl":"https://halo-nine-indol.vercel.app/og/halo-3x2.png",
-      "button":{"title":"Play Halo","action":{"type":"launch_miniapp","url":"https://halo-nine-indol.vercel.app/"}}
-    }'/>
+  <!-- Basit OG -->
+  <meta property="og:title" content="Halo — Teşhis" />
+  <meta property="og:description" content="Vercel prod sayfa açılıyor mu test eder." />
 
-    <!-- OG / Twitter -->
-    <meta property="og:title" content="Farcade: Halo — Jump & Ring!" />
-    <meta property="og:description" content="Tek dokunuşla halka atla, skoru artır. Farcaster Mini App içinde oynanır." />
-    <meta property="og:image" content="https://halo-nine-indol.vercel.app/og/halo-3x2.png" />
-    <meta name="twitter:card" content="summary_large_image" />
+  <style>
+    html,body{height:100%} body{display:grid;place-items:center;background:#fdfcdc;font:16px/1.6 system-ui}
+    .card{padding:24px 28px;border:2px dashed #7c65c1;border-radius:16px;background:#fff;max-width:720px}
+    code{background:#eee;padding:2px 6px;border-radius:6px}
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>✅ Teşhis sayfası yüklendi</h1>
+    <p>Bu sayfayı görüyorsan, Vercel <strong>production</strong> domain içerik sunuyor.</p>
+    <p>Konsolda şu logları da görmelisin: <code>[diag] DOM ready</code>.</p>
+    <p>Bu adım çalıştıysa bir sonraki adım: <strong>Final (oyunlu) index.html</strong> dosyasını yüklemek.</p>
+  </div>
 
-    <style>
-      *{margin:0;padding:0;box-sizing:border-box}
-      canvas{display:block;outline:4px solid #7c65c1;margin:auto}
-      #mode-selection{
-        position:absolute;inset:0;background:#fdfcdc;display:flex;flex-direction:column;
-        align-items:center;justify-content:center;gap:10px;z-index:20
-      }
-      #select-image{width:300px;user-select:none;pointer-events:none}
-      #logos{width:280px;display:flex;justify-content:space-between}
-      #logos img{cursor:pointer;width:120px}
-      #icq-intro{
-        position:absolute;inset:0;background:#fdfcdc;display:flex;align-items:center;justify-content:center;
-        z-index:30;opacity:1;transition:opacity .8s ease;pointer-events:none
-      }
-      #icq-intro img{max-width:300px;user-select:none}
-    </style>
-  </head>
-
-  <body>
-    <!-- Mini App SDK robust loader (renderi bloklamaz) -->
-    <script type="module">
-      async function loadSdk() {
-        try {
-          const m = await import('https://cdn.jsdelivr.net/npm/@farcaster/miniapp-sdk/+esm');
-          if (m?.sdk?.actions?.ready) return m.sdk;
-        } catch(e){ console.warn('jsDelivr failed', e); }
-        try {
-          const m = await import('https://unpkg.com/@farcaster/miniapp-sdk@latest/dist/esm/index.js');
-          if (m?.sdk?.actions?.ready) return m.sdk;
-        } catch(e){ console.warn('unpkg failed', e); }
-        try {
-          const m = await import('https://esm.run/@farcaster/miniapp-sdk');
-          if (m?.sdk?.actions?.ready) return m.sdk;
-        } catch(e){ console.warn('esm.run failed', e); }
-        throw new Error('Mini App SDK not loaded');
-      }
-      (async () => {
-        try{
-          const sdk = await loadSdk();
-          await sdk.actions.ready(); // istersen jestleri kapatmak için ready(true)
-          console.log('✅ MiniApp ready() called');
-        }catch(e){
-          console.error('❌ MiniApp init failed:', e);
-        }
-      })();
-
-      // Sahip bilgileri (opsiyonel)
-      window.FARCADE_HANDLE = '@mrvoodoo';
-      window.FARCADE_TREASURY = '0xF55c09bb37839f8abeb33D5A256fa6549C829fCB';
-    </script>
-
-    <div id="mode-selection">
-      <img src="https://lqy3lriiybxcejon.public.blob.vercel-storage.com/ddc73a5d-2cd2-4c62-9a20-d4c204865be9/selectn-hGvj8li0gEymrjmLW9ikUWcJ8XSsaK.png?dVaH" id="select-image" alt="Select"/>
-      <div id="logos">
-        <img src="https://lqy3lriiybxcejon.public.blob.vercel-storage.com/ddc73a5d-2cd2-4c62-9a20-d4c204865be9/logoClassic-GF9FIUy2V0Tk8PqM1zUhHcEtbokutU.png?dm0s" alt="Classic" onclick="selectMode('classic')"/>
-        <img src="https://lqy3lriiybxcejon.public.blob.vercel-storage.com/ddc73a5d-2cd2-4c62-9a20-d4c204865be9/logoicq-0ldWFIT3nkawKzD3zqsSh0ijhDnzSr.png?ogib" alt="ICQ" onclick="selectMode('icq')"/>
-      </div>
-    </div>
-
-    <div id="icq-intro" style="display:none">
-      <img src="https://lqy3lriiybxcejon.public.blob.vercel-storage.com/ddc73a5d-2cd2-4c62-9a20-d4c204865be9/old-q6tGMzlfo0q0gVl4e1Ce3uoXe60tO8.png?bTrM" alt="ICQ Intro"/>
-    </div>
-
-    <canvas id="game"></canvas>
-
-    <script>
-      let selectedMode=null, ctx, canvas;
-
-      function selectMode(mode){
-        selectedMode=mode;
-        document.getElementById('mode-selection').style.display='none';
-        if(mode==='icq') showIcqIntro(); else startGame();
-      }
-
-      function showIcqIntro(){
-        const intro=document.getElementById('icq-intro');
-        intro.style.display='flex';
-        setTimeout(()=>{ intro.style.display='none'; startGame(); }, 1400);
-      }
-
-      function startGame(){ initGame(); }
-
-      function initGame(){
-        canvas=document.getElementById('game');
-        ctx=canvas.getContext('2d');
-
-        const gradientColor = selectedMode==='icq'
-          ? 'linear-gradient(to bottom,#fdfcdc 0%,#fdfcdc 70%,#b5ead7 100%)'
-          : 'linear-gradient(to bottom,#fdfcdc 0%,#fdfcdc 70%,#a0c4ff 100%)';
-        canvas.style.background=gradientColor;
-
-        const target=9/16;
-        if(window.innerWidth/window.innerHeight>target){
-          canvas.height=window.innerHeight; canvas.width=canvas.height*target;
-        }else{
-          canvas.width=window.innerWidth; canvas.height=canvas.width/target;
-        }
-
-        const CENTER_X=canvas.width/2, BOTTOM_Y=canvas.height-100;
-        let rings=[], gravity=canvas.height*3, gameOver=false, score=0;
-        let fallMul=1, rotMul=1;
-
-        function updateMul(){
-          if(score>=100){ rotMul=1.2; fallMul=1.12; }
-          else if(score>=60){ rotMul=1.15; fallMul=1.09; }
-          else if(score>=30){ rotMul=1.10; fallMul=1.06; }
-          else if(score>=10){ rotMul=1.05; fallMul=1.03; }
-          else { rotMul=1; fallMul=1; }
-        }
-
-        const player={ x:CENTER_X, y:BOTTOM_Y, radius:10, color:'#7c65c1',
-          vx:0, vy:0, isJumping:false, attachedTo:null, attachedAngle:0 };
-
-        const flowerImg=new Image();
-        flowerImg.src = selectedMode==='icq'
-          ? 'https://lqy3lriiybxcejon.public.blob.vercel-storage.com/ddc73a5d-2cd2-4c62-9a20-d4c204865be9/Haloicq-bxV7JqmMGPRHmTZyykljtUDctQdJYL.png?KWoJ'
-          : null;
-        let flowerLoaded=false; flowerImg.onload=()=>{ flowerLoaded=true; };
-
-        function makeRing(){
-          const radius=60*(0.8+Math.random()*0.5);
-          const dir=Math.random()>0.5?1:-1;
-          const x=rings.length===0?CENTER_X:80+Math.random()*(canvas.width-160);
-          return {x, y:-200, radius, angle:0, direction:dir, touched:false};
-        }
-        rings.push(makeRing());
-
-        function updateRings(dt){
-          updateMul();
-          const fall=(canvas.height/8)*fallMul;
-          for(const r of rings){ r.y+=fall*dt; r.angle+=2.5*dt*r.direction*rotMul; }
-          if(rings[rings.length-1].y>canvas.height*0.1) rings.push(makeRing());
-          if(rings.length>5) rings.shift();
-        }
-
-        function updatePlayer(dt){
-          if(player.attachedTo){
-            const r=player.attachedTo;
-            player.x=r.x+Math.cos(player.attachedAngle+r.angle)*r.radius;
-            player.y=r.y+Math.sin(player.attachedAngle+r.angle)*r.radius;
-          }else if(player.isJumping){
-            player.vy+=gravity*dt; player.x+=player.vx*dt; player.y+=player.vy*dt;
-          }else{
-            player.x=CENTER_X; player.y=BOTTOM_Y;
-          }
-          if(player.y>canvas.height||player.y<0||player.x<0||player.x>canvas.width) gameOver=true;
-        }
-
-        function collide(){
-          for(const r of rings){
-            if(!r.touched){
-              const dx=player.x-r.x, dy=player.y-r.y, dist=Math.sqrt(dx*dx+dy*dy);
-              if(Math.abs(dist-r.radius)<15){
-                r.touched=true; score++; player.vx=0; player.vy=0; player.attachedTo=r;
-                player.attachedAngle=Math.atan2(player.y-r.y, player.x-r.x)-r.angle;
-                player.x=r.x+Math.cos(player.attachedAngle+r.angle)*r.radius;
-                player.y=r.y+Math.sin(player.attachedAngle+r.angle)*r.radius;
-                player.isJumping=false; return;
-              }
-            }
-          }
-        }
-
-        canvas.addEventListener('click', ()=>{
-          if(gameOver) return location.reload();
-          if(!player.isJumping){
-            const jump=canvas.height*2.5;
-            if(!player.attachedTo){ player.vx=0; player.vy=-jump; }
-            else{
-              const r=player.attachedTo, dx=player.x-r.x, dy=player.y-r.y;
-              const dist=Math.sqrt(dx*dx+dy*dy), scale=jump/dist;
-              player.vx=dx*scale; player.vy=dy*scale;
-            }
-            player.attachedTo=null; player.isJumping=true;
-          }
-        });
-
-        let last=performance.now();
-        function loop(now){
-          const dt=(now-last)/1000; last=now;
-          if(gameOver) return;
-          ctx.clearRect(0,0,canvas.width,canvas.height);
-          ctx.fillStyle='#7c65c1'; ctx.font='20px system-ui';
-          ctx.fillText(`Score: ${score}`, 10, 20);
-          updateRings(dt); updatePlayer(dt); collide();
-          for(const r of rings) drawRing(r); drawPlayer();
-          requestAnimationFrame(loop);
-        }
-
-        function drawRing(r){
-          if(selectedMode==='icq'){
-            if(!flowerLoaded) return;
-            const size=r.radius*2; ctx.save(); ctx.translate(r.x,r.y); ctx.rotate(r.angle);
-            ctx.drawImage(flowerImg,-size/2,-size/2,size,size); ctx.restore();
-          }else{
-            ctx.beginPath(); ctx.arc(r.x,r.y,r.radius,0,Math.PI*2);
-            ctx.strokeStyle='#a0c4ff'; ctx.lineWidth=4; ctx.stroke();
-          }
-        }
-        function drawPlayer(){
-          ctx.beginPath(); ctx.arc(player.x,player.y,player.radius,0,Math.PI*2);
-          ctx.fillStyle=player.color; ctx.fill();
-        }
-
-        requestAnimationFrame(loop);
-      }
-    </script>
-  </body>
+  <script>
+    console.log('[diag] DOM ready');
+  </script>
+</body>
 </html>
