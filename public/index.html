@@ -2,7 +2,7 @@
 <html lang="tr">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Farcade: Halo</title>
 
     <!-- Farcaster Mini App embed (feed kartı + Launch) -->
@@ -25,6 +25,7 @@
 
     <style>
       *{margin:0;padding:0;box-sizing:border-box}
+      html,body{height:100%}
       canvas{display:block;outline:4px solid #7c65c1;margin:auto}
       #mode-selection{
         position:absolute;inset:0;background:#fdfcdc;display:flex;flex-direction:column;
@@ -42,21 +43,15 @@
   </head>
 
   <body>
-    <!-- Farcaster Mini App SDK: çoklu CDN fallback + ready(true) -->
+    <!-- Farcaster Mini App SDK (resmî öneri: esm.sh) + ready(true) -->
     <script type="module">
-      async function loadSdk() {
-        try { const m = await import('https://cdn.jsdelivr.net/npm/@farcaster/miniapp-sdk/+esm'); if (m?.sdk?.actions?.ready) return m.sdk; } catch(e) { console.warn('jsDelivr failed', e); }
-        try { const m = await import('https://unpkg.com/@farcaster/miniapp-sdk@latest/dist/esm/index.js'); if (m?.sdk?.actions?.ready) return m.sdk; } catch(e) { console.warn('unpkg failed', e); }
-        try { const m = await import('https://esm.run/@farcaster/miniapp-sdk'); if (m?.sdk?.actions?.ready) return m.sdk; } catch(e) { console.warn('esm.run failed', e); }
-        throw new Error('Mini App SDK not loaded');
-      }
+      import { sdk } from 'https://esm.sh/@farcaster/miniapp-sdk';
 
       (async () => {
         try {
-          const sdk = await loadSdk();
-          // true = native geri/kenar jestlerini kapatır; splash kapanır
+          // true: geri/kenar jestlerini kapatır; splash'ı hemen kapatır
           await sdk.actions.ready(true);
-          console.log('✅ MiniApp ready(true) called');
+          console.log('✅ MiniApp ready(true) called via esm.sh');
         } catch (e) {
           console.error('❌ MiniApp init failed:', e);
         }
