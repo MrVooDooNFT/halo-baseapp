@@ -1,0 +1,7 @@
+{
+  "name": "Halo (Farcade)",
+  "home": "https://halo-nine-indol.vercel.app/",
+  "icon": "https://halo-nine-indol.vercel.app/icon.png",
+  "splashImageUrl": "https://halo-nine-indol.vercel.app/splash.png",
+  "splashBackgroundColor": "#0b0f19"
+}
