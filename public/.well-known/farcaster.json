@@ -1,19 +1,25 @@
 {
-  "name": "HaloFinity",
-  "description": "An on-chain reflex mini-game built for Farcaster. Tap to jump, dodge rings, and climb the leaderboard.",
-  "icon_url": "https://halofinity.vercel.app/icon.png",
-  "splash_image_url": "https://halofinity.vercel.app/splash.png",
-  "website_url": "https://halofinity.vercel.app",
-  "main_frame_url": "https://halofinity.vercel.app/frame",
-  "developer": {
-    "name": "Mr VooDoo",
-    "url": "https://x.com/MrVooDooNFT"
-  },
-  "frame": {
-    "buttons": ["Play", "Leaderboard", "About"],
-    "post_url": "https://halofinity.vercel.app/api/frame"
+  "accountAssociation": {
+    "header": "",
+    "payload": "",
+    "signature": ""
   },
   "baseBuilder": {
-    "ownerAddress": "0x6002F67a6A7cacF200Ff8fd4E5E8AdA3D4E03Ca5"
+    "allowedAddresses": ["0x6002F67a6A7cacF200Ff8fd4E5E8AdA3D4E03Ca5"]
+  },
+  "miniapp": {
+    "version": "1",
+    "name": "HaloFinity",
+    "homeUrl": "https://halo-baseapp.vercel.app",
+    "iconUrl": "https://halo-baseapp.vercel.app/icon.png",
+    "splashImageUrl": "https://halo-baseapp.vercel.app/splash.png",
+    "splashBackgroundColor": "#000000",
+    "primaryCategory": "games",
+    "tags": ["arcade", "reflex", "onchain"],
+    "subtitle": "Tap, dodge, climb.",
+    "description": "On-chain reflex mini-game. Tap to jump, dodge rings, climb the leaderboard.",
+    "ogTitle": "HaloFinity",
+    "ogDescription": "On-chain reflex mini-game.",
+    "ogImageUrl": "https://halo-baseapp.vercel.app/og.png"
   }
 }
